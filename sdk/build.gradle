@@ -2,14 +2,32 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+ext{
+    publishedGroupId = 'org.btelman.android'
+    libraryName = 'bluetooth'
+    artifact = 'bluetooth'
+    publishedGroupId = 'org.btelman.android'
+    libraryDescription = 'Bluetooth library for Android, supporting both BLE Gatt and classic'
+}
+
 android {
     compileSdkVersion 30
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "$publishedGroupId.$artifact"]
+    }
 
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode buildNumber
+        versionName versionSemantic
+        versionNameSuffix + '-' + gitHash
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -25,11 +43,13 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'org.btelman.logutil:logutil:1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
 }
+
+apply from: '../bintray.gradle'

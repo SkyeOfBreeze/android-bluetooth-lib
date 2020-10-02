@@ -8,16 +8,52 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+        //bintray
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+}
+
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+ext{
+    buildNumber = 1
+    gitHash = getGitHash()
+    versionSemantic = "0.1"
+
+    bintrayRepo = 'maven'
+    bintrayName = 'bluetoothlib-android'
+
+    siteUrl = 'https://github.com/btelman96/shellutil-android'
+    gitUrl = 'https://github.com/btelman96/shellutil-android.git'
+
+    libraryVersion = "$versionSemantic"
+
+    developerId = 'btelman96'
+    developerName = 'Brendon Telman'
+    developerEmail = 'android.bluetooth.sdk@btelman.org'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 }
 
 allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url  "https://dl.bintray.com/btelman96/maven"
+        }
     }
 }
 
